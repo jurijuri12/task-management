@@ -8,39 +8,66 @@ const AddTask = ({ onAdd }) => {
   const onSubmit = (e) => {
     e.preventDefault()
 
-    if(!text){
+    if (!text) {
       alert('Please add a task')
       return
     }
-
-    onAdd ({ text, day, reminder })
+    onAdd({ text, day, reminder })
 
     setText('')
     setDay('')
     setReminder(false)
   }
 
+  const formatDateTime = (datetime) => {
+    if (!datetime) return '';
+
+    const date = new Date(datetime); 
+    const formattedDate = date.toLocaleDateString();
+    const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); 
+
+    return `${formattedDate} ${formattedTime}`;
+  };
+
   return (
     <form className='add-form' onSubmit={onSubmit}>
-        <div className='form-control'>
-            <label>Task</label>
-            <input type='text' placeholder='Add Task' 
-            value={text} onChange ={(e) => setText(e.target.value) }/>
+      <div className='form-control'>
+        <label>Task</label>
+        <input 
+          type='text' 
+          placeholder='Add Task' 
+          value={text} 
+          onChange={(e) => setText(e.target.value)} 
+        />
+      </div>
+      <div className='form-control'>
+        <label>Day & Time</label>
+        <input 
+          type='datetime-local' 
+          value={day} 
+          onChange={(e) => setDay(e.target.value)} 
+        />
+      </div>
+      {day && (
+        <div className='task-display'>
+          <h4>Task Date & Time:</h4>
+          <p>{formatDateTime(day)}</p>
         </div>
-        <div className='form-control'>
-            <label>Day & Time</label>
-            <input type='text' placeholder='Add Day & Time'
-            value={day} onChange ={(e) => setDay(e.target.value) } />
-        </div>
-        <div className='form-control-check'>
-            <label>Set Reminder</label>
-            <input type='checkbox'
-            checked={reminder}
-            value={reminder} onChange ={(e) => setReminder(e.currentTarget.checked) }/>
-        </div>
-
-        <input type='submit' value='Save task' 
-        className="btn btn-block"/>
+      )}
+      <div className='form-control form-control-check'>
+        <label>Set Reminder</label>
+        <input 
+          type='checkbox' 
+          checked={reminder} 
+          value={reminder} 
+          onChange={(e) => setReminder(e.currentTarget.checked)} 
+        />
+      </div>
+      <input 
+        type='submit' 
+        value='Save Task' 
+        className='btn btn-block' 
+      />
     </form>
   )
 }
